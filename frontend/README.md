@@ -1,1 +1,1 @@
-# DegensArena
+# DegensArena Frontend
