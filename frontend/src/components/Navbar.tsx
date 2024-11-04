@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import { Menu, X } from "lucide-react"
 import { useState } from "react"
+import { Button } from "./Button"
 
 export default function Navbar() {
    const [isOpen, setIsOpen] = useState(false)
@@ -32,7 +33,12 @@ export default function Navbar() {
                      </li>
                   </ul>
                   {isOpen && <SideBar />}
-                  <SignInButton className="hidden md:block" />
+                  <Button
+                     className="hidden md:block hover:bg-[#7da0ca] bg-[#98afd4] focus-visible:bg-[#98afd4] text-white font-semibold rounded-2xl py-1 px-4 transition-all"
+                     // onClick={signIn}
+                  >
+                     Sign in
+                  </Button>
                </>
             </nav>
          </header>
@@ -43,16 +49,6 @@ export default function Navbar() {
             </p>
          </div>
       </>
-   )
-}
-
-function SignInButton({ className }: { className: string }) {
-   return (
-      <button
-         className={`${className} hover:bg-[#7da0ca] bg-[#98afd4] focus-visible:bg-[#98afd4] text-white font-semibold rounded-2xl py-1 px-4 transition-all`}
-      >
-         Sign in
-      </button>
    )
 }
 
@@ -72,7 +68,12 @@ function SideBar() {
             >
                King Makers
             </Link>
-            <SignInButton className="block mx-4 my-2" />
+            <Button
+               className="block mx-4 my-2 hover:bg-[#7da0ca] bg-[#98afd4] focus-visible:bg-[#98afd4] text-white font-semibold rounded-2xl py-1 px-4 transition-all"
+               // onClick={signIn}
+            >
+               Sign in
+            </Button>
          </div>
       </div>
    )
