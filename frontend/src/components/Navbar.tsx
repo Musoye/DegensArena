@@ -35,7 +35,7 @@ export default function Navbar() {
                         <Link to="/king-makers">King Makers</Link>
                      </li>
                   </ul>
-                  {isOpen && <SideBar />}
+                  {isOpen && <SideBar signin={signin} />}
                   {userData ? (
                      <Button
                         className="hidden md:block hover:bg-[#7da0ca] bg-[#98afd4] focus-visible:bg-[#98afd4] text-white font-semibold rounded-2xl py-1 px-4 transition-all"
@@ -64,7 +64,7 @@ export default function Navbar() {
    )
 }
 
-function SideBar() {
+function SideBar({ signin }: { signin: () => void }) {
    return (
       <div className="md:hidden absolute top-[64px] left-0 w-full bg-[#bad4fd]">
          <div className="flex flex-col items-start gap-1 mt-4">
@@ -80,12 +80,12 @@ function SideBar() {
             >
                King Makers
             </Link>
-            {/* <Button
+            <Button
                className="block mx-4 my-2 hover:bg-[#7da0ca] bg-[#98afd4] focus-visible:bg-[#98afd4] text-white font-semibold rounded-2xl py-1 px-4 transition-all"
-               onClick={() => authenticate()}
+               onClick={() => signin()}
             >
                Sign in
-            </Button> */}
+            </Button>
          </div>
       </div>
    )
