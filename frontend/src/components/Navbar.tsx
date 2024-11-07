@@ -2,9 +2,12 @@ import { Link } from "react-router-dom"
 import { Menu, X } from "lucide-react"
 import { useState } from "react"
 import { Button } from "./Button"
+import useStacksAuth from "../hooks/useStacks"
+import { truncateAddress } from "../utils/truncate"
 
 export default function Navbar() {
    const [isOpen, setIsOpen] = useState(false)
+   const { userData, signin, signout } = useStacksAuth()
 
    return (
       <>
@@ -33,12 +36,21 @@ export default function Navbar() {
                      </li>
                   </ul>
                   {isOpen && <SideBar />}
-                  <Button
-                     className="hidden md:block hover:bg-[#7da0ca] bg-[#98afd4] focus-visible:bg-[#98afd4] text-white font-semibold rounded-2xl py-1 px-4 transition-all"
-                     // onClick={signIn}
-                  >
-                     Sign in
-                  </Button>
+                  {userData ? (
+                     <Button
+                        className="hidden md:block hover:bg-[#7da0ca] bg-[#98afd4] focus-visible:bg-[#98afd4] text-white font-semibold rounded-2xl py-1 px-4 transition-all"
+                        onClick={() => signout()}
+                     >
+                        {truncateAddress(userData?.profile?.stxAddress.testnet)}
+                     </Button>
+                  ) : (
+                     <Button
+                        className="hidden md:block hover:bg-[#7da0ca] bg-[#98afd4] focus-visible:bg-[#98afd4] text-white font-semibold rounded-2xl py-1 px-4 transition-all"
+                        onClick={() => signin()}
+                     >
+                        Sign in
+                     </Button>
+                  )}
                </>
             </nav>
          </header>
@@ -68,12 +80,12 @@ function SideBar() {
             >
                King Makers
             </Link>
-            <Button
+            {/* <Button
                className="block mx-4 my-2 hover:bg-[#7da0ca] bg-[#98afd4] focus-visible:bg-[#98afd4] text-white font-semibold rounded-2xl py-1 px-4 transition-all"
-               // onClick={signIn}
+               onClick={() => authenticate()}
             >
                Sign in
-            </Button>
+            </Button> */}
          </div>
       </div>
    )
