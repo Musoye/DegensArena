@@ -6,7 +6,7 @@ type KingMakers = {
    winsToKing: number
 }
 
-const kingMakers: KingMakers[] = new Array(60).fill({ player: "velarvelar", wins: 93, winsToKing: 7 })
+const kingMakers: KingMakers[] = new Array(1).fill({ player: "velarvelar", wins: 93, winsToKing: 7 })
 
 export default function CreatedBattlesTable() {
    return (
