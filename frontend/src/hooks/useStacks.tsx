@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
 import { userSession } from "../userSession"
-import { disconnect, UserData, authenticate } from "@stacks/connect"
+import { disconnect, UserData, authenticate, StacksProvider } from "@stacks/connect"
+import { getProvider } from "../getProvider"
 
 export default function useStacksAuth() {
    const [userData, setUserData] = useState<UserData>()
+   const provider: StacksProvider = getProvider()
 
    const appDetails = {
       name: "Degens Arena",
@@ -21,17 +23,20 @@ export default function useStacksAuth() {
    }, [])
 
    const signin = async () => {
-      await authenticate({
-         appDetails,
-         userSession,
-         onFinish() {
-            window.location.reload()
+      await authenticate(
+         {
+            appDetails,
+            userSession,
+            onFinish() {
+               window.location.reload()
+            },
+            onCancel() {
+               console.log("Oops!! Cancelled signin")
+            },
+            sendToSignIn: true,
          },
-         onCancel() {
-            console.log("Oops!! Cancelled signin")
-         },
-         sendToSignIn: true,
-      })
+         provider,
+      )
    }
 
    const signout = () => {
