@@ -3,7 +3,6 @@ const {createBattle, getBattles, getBattle, updateBattle, getBattleLive, getBatt
 
 router.route('/').post(createBattle).get(getBattles);
 router.route('/live').get(getBattleLive);
-router.route('/future').get(getBattleFuture);
 router.route('/past').get(getBattlePast);
 router.route('/:id').put(updateBattle).get(getBattle)
 

@@ -7,28 +7,30 @@ const Token = require("../../models/tokenModel.js");
 const Battle = require("../../models/battleModel.js");
 
 const createBattle = expressAsyncHandler(async (req, res) => {
-  const { contender_id, creator_id, contender_img, creator_img, creator_name, contender_name, time } =
+  const { contender_id, creator_id } =
     req.body;
-  if (!contender_id || !creator_id || !contender_img || !creator_img || !creator_name || !contender_name || !time) {
-    return res
-      .status(400)
-      .json({
-        error:
-          "No contender_id, creator_id, contender_img, creator_img, creator_name, contender_name or time in the request body",
-      });
+  if (!contender_id || !creator_id ) {
+    return res.status(400).json({ error: "No contender_id, creator_id  in the request body",});
   }
   if (contender_id == creator_id) {
     return res.status(400).json({ error: "Contender and creator cannot be the same" });
   }
-  const status = "future";
+  const status = "live";
+  const creator = await Token.findOne({ contract_address: creator_id });
+  if (!creator) {
+    return res.status(404).json({ error: "Creator not found" });
+  }
+  const contender = await Token.findOne({ contract_address: contender_id });
+  if (!contender) {
+    return res.status(404).json({ error: "Contender not found" });
+  }
   const battle = await Battle.create({
-    contender_id,
     creator_id,
-    creator_name,
-    contender_name,
-    contender_img,
-    creator_img,
-    time,
+    creator_name: creator.name,
+    creator_img: creator.image_url,
+    contender_id,
+    contender_name: contender.name,
+    contender_img: contender.image_url,
     status,
   });
   return res.status(201).json(format(battle));
@@ -45,11 +47,6 @@ const battleStatus = async (query) => {
 
 const getBattleLive = expressAsyncHandler(async (req, res) => {
   const result = await battleStatus('live');
-  return res.status(200).json(result);
-})
-
-const getBattleFuture = expressAsyncHandler(async (req, res) => {
-  const result = await battleStatus('future');
   return res.status(200).json(result);
 })
 
@@ -87,7 +84,6 @@ const updateBattle = expressAsyncHandler(async (req, res) => {
     return res.status(400).json({ error: "Battle not found" });
   }
   const { contender_id, contender_img, contender_name, status, time } = req.body;
-  const updated = {};
   if (contender_id) {
     battle.contender_id = contender_id;
   }
@@ -103,11 +99,9 @@ const updateBattle = expressAsyncHandler(async (req, res) => {
   if (time) {
     battle.time = time;
   }
-  // if (status) {
-  //   if (status == "live" || status == "past" || status == "future") {
-  //     battle.status = status;
-  //   }
-  // }
+  if (status) {
+    battle.status = status;
+  }
   await battle.save();
   return res.status(200).json(format(battle));
 });
