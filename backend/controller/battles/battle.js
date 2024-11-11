@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {createBattle, getBattles, getBattle, updateBattle, getBattleLive, getBattleFuture, getBattlePast} = require('./controller')
+const {createBattle, getBattles, getBattle, updateBattle, getBattleLive, getBattlePast} = require('./controller')
 
 router.route('/').post(createBattle).get(getBattles);
 router.route('/live').get(getBattleLive);

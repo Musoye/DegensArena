@@ -106,4 +106,4 @@ const updateBattle = expressAsyncHandler(async (req, res) => {
   return res.status(200).json(format(battle));
 });
 
-module.exports = {createBattle, getBattles, getBattle, updateBattle, getBattleLive, getBattleFuture, getBattlePast};
+module.exports = {createBattle, getBattles, getBattle, updateBattle, getBattleLive, getBattlePast};

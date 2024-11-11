@@ -33,8 +33,9 @@ function findTokenByAddress(tokens, contractAddress) {
 
 const getTokens = expressAsyncHandler(async (req, res) => {
     if (!req.query.contract_address) {
-        const tokens = await Token.find({});
-        const result = tokens.map((token) => format(token));
+        const tokens = await Token.find();
+        const result = tokens.map((tok) => format(tok));
+        console.log(result)
         return res.status(200).json(result);
     } else {
         const result = await Token.findOne({ contract_address: req.query.contract_address })
@@ -80,7 +81,7 @@ const updateToken = expressAsyncHandler(async (req, res) => {
 })
 
 const getcurrentTable = expressAsyncHandler(async (req, res) => {
-    const tokens = await Token.find({}).sort({ points: -1 }).limit(100);
+    const tokens = await Token.find().sort({ points: -1 }).limit(100);
     return res.status(200).json(tokens.map(format));
 })
 
