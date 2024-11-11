@@ -5,39 +5,23 @@ const { getToke } = require('./birdeye.js')
 
 
 const createToken = expressAsyncHandler(async (req, res) => {
-    const {name, contract_address, image_url} = req.body
-    if(!name || !contract_address || !image_url ) {
-        return res.status(400).json({'error': 'No name, contract_address or image_url in the request body'})
+    const { name, contract_address, image_url, price, assest_name } = req.body
+    if (!name || !contract_address || !image_url) {
+        return res.status(400).json({ 'error': 'No name, contract_address or image_url in the request body' })
     }
     let symbol = req.body.symbol
-    const exist = await Token.findOne({contract_address})
+    const exist = await Token.findOne({ contract_address })
     if (exist) {
-        return res.status(409).json({'error': 'A token with the same contract address exist'})
+        return res.status(409).json({ 'error': 'A token with the same contract address exist' })
     }
     if (!symbol) {
         symbol = name.slice(0, 3)
     }
-    const token = await Token.create({name, contract_address, image_url, symbol})
+    const token = await Token.create({ name, contract_address, image_url, symbol, price, assest_name });
     return res.status(201).json(format(token))
 })
 
-// const getTokens = expressAsyncHandler(async (req, res) => {
-//     const query = req.query.query || ''
-//     let response = []
-//     if (!query) {
-//         response = await Token.find()
-//     } else {
-//         response = await Token.find({name: query})     
-//     }
-//     if (response.length == 0 && query){
-//         response = await Token.find({contract_address: query})
-//     }
-//     const value = []
-//     for (let resa of response) {
-//         value.push(format(resa))
-//     }
-//     return res.status(200).json(value)
-// })
+
 function findTokenByAddress(tokens, contractAddress) {
     for (const token of tokens.data) {
         if (token.address === contractAddress) {
@@ -48,21 +32,30 @@ function findTokenByAddress(tokens, contractAddress) {
 }
 
 const getTokens = expressAsyncHandler(async (req, res) => {
-    const value = await getToke()
-    return res.status(200).json(value)
+    if (!req.query.contract_address) {
+        const tokens = await Token.find();
+        const result = tokens.map((tok) => format(tok));
+        console.log(result)
+        return res.status(200).json(result);
+    } else {
+        const result = await Token.findOne({ contract_address: req.query.contract_address })
+        if (!result) {
+            return res.status(404).json({ 'error': 'The token cannot be found' })
+        }
+        return res.status(200).json(result)
+    }
 })
 
 const getToken = expressAsyncHandler(async (req, res) => {
-    const value = await getToke()
-    const result = findTokenByAddress(value, req.params.id)
-    if(!result) {
-        return res.status(404).json({'error': 'The token cannot be found'})
+   const result = await Token.findOne({ _id: req.params.id })
+    if (!result) {
+        return res.status(404).json({ 'error': 'The token cannot be found' })
     }
     return res.status(200).json(result)
 })
 
 const updateToken = expressAsyncHandler(async (req, res) => {
-    const { name, contract_address, image_url, symbol}  = req.body
+    const { name, contract_address, image_url, symbol, price, assest_name  } = req.body
     const updated = {}
     if (name) {
         updated.name = name
@@ -76,9 +69,20 @@ const updateToken = expressAsyncHandler(async (req, res) => {
     if (symbol) {
         updated.symbol = symbol
     }
-    await Token.findByIdAndUpdate(req.params.id, { $set: updated}, { new: true })
+    if (price) {
+        updated.price = price
+    }
+    if (assest_name) {
+        updated.assest_name = assest_name
+    }
+    await Token.findByIdAndUpdate(req.params.id, { $set: updated }, { new: true })
     const newToken = await Token.findOne({ _id: req.params.id });
     return res.status(200).json(format(newToken));
 })
 
-module.exports = { createToken, getTokens, getToken, updateToken }
+const getcurrentTable = expressAsyncHandler(async (req, res) => {
+    const tokens = await Token.find().sort({ points: -1 }).limit(100);
+    return res.status(200).json(tokens.map(format));
+})
+
+module.exports = { createToken, getTokens, getToken, updateToken, getcurrentTable }

@@ -1,13 +1,21 @@
 const expressAsyncHandler = require("express-async-handler");
 const { processMongoDBObject: format, reverseProcessMongoDBObject: reformat } = require("../../utils/formatter.js");
 const Transaction = require("../../models/transactionModel.js");
+const Token = require("../../models/tokenModel.js");
 
 const createTransaction = expressAsyncHandler(async (req, res) => {
-    const { token, user_id, amount, contender_id } = req.body;
+    const { token, user_id, amount } = req.body;
     if (!token) {
         return res.status(400).json({ error: "No Token in the request body" });
     }
-    const trans = await Transaction.create({ token, user_id, amount, contender_id });
+    if (!user_id) {
+        return res.status(400).json({ error: "No user_id i.e the user wallet address in the request body" });
+    }
+    const tokenExist = await Token.findOne({ contract_address: token });
+    if (!tokenExist) {
+        return res.status(404).json({ error: "Token not found" });
+    }
+    const trans = await Transaction.create({ token, user_id, amount});
     return res.status(201).json(format(trans));
 });
 
@@ -26,9 +34,13 @@ const transact = async (query) => {
 }
 
 const getTransactions = expressAsyncHandler(async (req, res) => {
-    const token = req.query.token
-    const result = await transact(token);
-    return res.status(200).json(result);
+    if (req.query.token) {
+        const result = await transact(req.query.token);
+        return res.status(200).json(result);
+    } else {
+        const result = await transact();
+        return res.status(200).json(result);
+    }
 })
 
 
