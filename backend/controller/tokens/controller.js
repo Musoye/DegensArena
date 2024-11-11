@@ -79,4 +79,9 @@ const updateToken = expressAsyncHandler(async (req, res) => {
     return res.status(200).json(format(newToken));
 })
 
-module.exports = { createToken, getTokens, getToken, updateToken }
+const getcurrentTable = expressAsyncHandler(async (req, res) => {
+    const tokens = await Token.find({}).sort({ points: -1 }).limit(100);
+    return res.status(200).json(tokens.map(format));
+})
+
+module.exports = { createToken, getTokens, getToken, updateToken, getcurrentTable }
