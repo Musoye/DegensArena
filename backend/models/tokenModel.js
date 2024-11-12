@@ -10,6 +10,10 @@ const tokenSchema = new mongoose.Schema({
     point: {
         type:Number,
         default:0
+    },
+    king: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

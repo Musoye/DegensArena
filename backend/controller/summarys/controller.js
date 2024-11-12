@@ -5,6 +5,8 @@ const Summary = require('../../models/summaryModel.js')
 const Token = require('../../models/tokenModel.js')
 const { topper } = require('../../utils/topper.js')
 
+const threshold = 100
+
 
 const createSummary = expressAsyncHandler(async (req, res) => {
     const { battle_id, winner } = req.body
@@ -33,17 +35,24 @@ const createSummary = expressAsyncHandler(async (req, res) => {
         if (!cr_token) {
             return res.status(404).json({ 'error': 'The creator token cannot be found' })
         }
-        cr_token.point += 1
-        await cr_token.save()
-        await topper(battle.creator_id)
+        if(cr_token.point + 1 != threshold){
+            cr_token.point += 1
+            await cr_token.save()
+        } else {
+            await topper(battle.creator_id, "creator")
+        }
+
     } else {
         const co_token = await Token.findOne({ contract_address: battle.creator_id })
         if (!co_token) {
             return res.status(404).json({ 'error': 'The contender token cannot be found' })
         }
-        co_token.point += 1
-        await co_token.save()
-        await topper(battle.contender_id)
+        if (co_token.point + 1 != threshold){
+            co_token.point += 1
+            await co_token.save()
+        } else {
+            await topper(battle.contender_id, "contender")
+        }
     }
     battle.status = "past"
     await battle.save();

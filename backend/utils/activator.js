@@ -1,11 +1,11 @@
 const Battle = require('../models/battleModel.js')
-const { declareWinner } = require('../controller/tokens/birdeye.js')
+const { declareWinner } = require('./declare_winner.js')
 const moment = require('moment');
 
 
 const activator = async () => {
     const currentTime = moment();
-    const battles = await Battle.find({ status: { $in: ['live', 'future'] } });
+    const battles = await Battle.find({ status: { $in: ['live'] } });
     console.log(`current time: ${currentTime}`);
 
     for (const battle of battles) {
@@ -20,10 +20,7 @@ const activator = async () => {
         console.log(`Minutes difference: ${minutesDifference}`);
         console.log(`Seconds difference: ${seconddiff}`);
 
-        if (seconddiff < 10  && minutesDifference <= 0 && hoursDifference <= 0 && battle.status === 'future') {
-            console.log('battle is live');
-            battle.status = 'live';
-        } else if (hoursDifference <= -1 && minutesDifference <= -60 && battle.status === 'live') {
+        if (hoursDifference <= -1 && minutesDifference <= -60 && battle.status === 'live') {
             console.log('battle is over');
             battle.status = 'past';
             try {
