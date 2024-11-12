@@ -83,7 +83,7 @@ const updateBattle = expressAsyncHandler(async (req, res) => {
   if (!battle) {
     return res.status(400).json({ error: "Battle not found" });
   }
-  const { contender_id, contender_img, contender_name, status, time } = req.body;
+  const { contender_id, contender_img, contender_name, status } = req.body;
   if (contender_id) {
     battle.contender_id = contender_id;
   }
@@ -95,9 +95,6 @@ const updateBattle = expressAsyncHandler(async (req, res) => {
   }
   if (creator_img) {
     battle.creator_img = creator_img;
-  }
-  if (time) {
-    battle.time = time;
   }
   if (status) {
     battle.status = status;

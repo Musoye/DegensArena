@@ -35,7 +35,6 @@ const getTokens = expressAsyncHandler(async (req, res) => {
     if (!req.query.contract_address) {
         const tokens = await Token.find();
         const result = tokens.map((tok) => format(tok));
-        console.log(result)
         return res.status(200).json(result);
     } else {
         const result = await Token.findOne({ contract_address: req.query.contract_address })
