@@ -36,7 +36,8 @@ app.get("/", (req, res) => {
 });
 
 // API routes
-app.use('/activate', require('./utils/cron.js'));                                 
+app.use('/activate', require('./utils/cron.js'));
+app.use('/credits', require('./controller/credit/credit.js'))                               
 app.use("/tokens", require("./controller/tokens/token.js"));
 app.use("/battles", require("./controller/battles/battle.js"));
 app.use("/summaries", require("./controller/summarys/summary.js"));

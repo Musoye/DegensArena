@@ -181,4 +181,47 @@ Request body(json):
 }
 Response -> will return the updated information
 
+### Current Standings on the token position Table
+
+GET /tokens/table -> Will return the result from the highest to lowest and it will be top 100
+
+### Credits
+
+NB: Data for wallet_address to credit for winnig battles
+
+#### Get all Credits
+
+GET /credits
+
+Response -> all credits
+
+#### Get all transactions by status can either be pending of paid
+
+GET /credits?status=x where x can either be pending or paid
+
+Response -> all credits that satisfy x
+
+#### Get a credit by battle_id
+
+GET /credits?battle_id=x where x is the battle id you are looking
+
+Response -> the credits with the battle id will e returned
+
+#### Get a credit by id
+
+GET /creditss/:id where id will be id of the credit
+Response -> The credit will be returned if exist
+
+#### Update a credit by id
+
+PUT /credits/:id where id will be id of the credit
+
+it is onlt status that can be updated.
+you don't need to press anyting just trigger it. the status will be updated to paid.
+Response -> The credit will be updated if exist
+
+
+
+
+
 This document provides a comprehensive guide for testing the API endpoints using Python's requests module or other such module. Each section covers a different aspect of the API, including tokens, battles, transactions and summaries, with examples for creating, retrieving, and updating records.
