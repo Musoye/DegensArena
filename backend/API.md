@@ -4,6 +4,8 @@ This document describes how to test the API endpoints for tokens, battles, trans
 
 Base URL: `http://127.0.0.1:3000`
 
+NB: where creator_id or contender_id is mentioned it is referring to their contract_address
+
 ### Token
 
 NB: creator_id is the contract address of the creator token
