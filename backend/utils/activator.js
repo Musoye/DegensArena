@@ -9,7 +9,7 @@ const activator = async () => {
     console.log(`current time: ${currentTime}`);
 
     for (const battle of battles) {
-        const battleTime = moment(battle.time);
+        const battleTime = moment(battle.createdAt);
         // const battleTime = moment("2024-10-15T23:02:46.057+01:00");
 
 
